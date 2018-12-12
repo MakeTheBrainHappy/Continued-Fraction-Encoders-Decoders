@@ -28,22 +28,13 @@ def decoder(a0,b0,a,b,c,d,e,value,continuedFractions):
 @jit    
 def encoder():
     start_time = time.time()
-    getcontext().prec = 100
     value = Decimal("3.1415926535897932384626433832795028841971693993751058209749445923078164062862089986280348253421170679821480865132823066470938446095505822317253594081284811174502841027019385211055596446229489549303819644288109756659334461284756482337867831652712019091456485669234603")
     continuedFractions = {}
-    for a0 in range(1,4):
-        for b0 in range(1,4):
-            for a in range(1,4):
-                for b in range(1,4):
-                    for c in range(1,4):
-                        for d in range(1,4):
-                            for e in range(1,4):
-                                if (d != 0 or e != 0):
-                                    decoder(a0,b0,a,b,c,d,e,value,continuedFractions)                                    
-                                    
+    decoder(1,3,2,4,4,2,4,value,continuedFractions)                                    
+    
     tempList = sorted(continuedFractions)
     tempVar = tempList[:15]
-    for i in range(0,15):
+    for i in range(0,1):
         print("change in x: ", tempVar[i], "CF ", continuedFractions.get(tempVar[i]))
     
     print("--- %s seconds ---" % (time.time() - start_time))            
