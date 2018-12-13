@@ -1,5 +1,6 @@
 from decimal import * 
 import time
+import math
 import numpy as np
 import numba
 from numba import jit
