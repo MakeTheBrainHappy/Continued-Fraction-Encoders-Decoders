@@ -1,5 +1,7 @@
 import math 
-from decimal import * 
+from decimal import *
+import matplotlib.pyplot as plt
+ 
 
 def main():
 
@@ -10,12 +12,14 @@ def main():
         bList.append(math.floor(value))
         value = 1/(value - Decimal(value).quantize(Decimal('1.'), rounding=ROUND_DOWN))
     print(bList)
-    f= open("FeigenbaumDeltaConstantStandardCF.txt","w+")
-    for i in range(0, 1000):
-        f.write(str(bList[i]))
-        f.write("\r\n")
-    f.close() 
-
+    #f= open("FeigenbaumDeltaConstantStandardCF.txt","w+")
+    #for i in range(0, 1000):
+        #f.write(str(bList[i]))
+        #f.write("\r\n")
+    #f.close() 
+    
+    plt.plot(bList)
+    plt.show()
 
 	
 #call to main
