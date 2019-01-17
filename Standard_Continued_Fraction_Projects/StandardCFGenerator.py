@@ -20,6 +20,9 @@ def main():
     #f.close() 
     
     plt.plot(bList)
+    plt.xlabel('term in the Standard Continued Fraction')
+    plt.ylabel('Value')
+    plt.title('Feigenbaum Delta Constant Standard CF')
     plt.show()
 
 	
