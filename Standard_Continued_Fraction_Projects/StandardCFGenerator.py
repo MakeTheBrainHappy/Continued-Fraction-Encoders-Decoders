@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 
 def main():
     
-    import requests
+    getcontext().prec = 1024
     a = requests.get('http://www.dtc.umn.edu/~odlyzko/zeta_tables/zeros2').text.splitlines()
     b = []
     for i in a:
