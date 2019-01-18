@@ -1,13 +1,37 @@
-import math 
+import math
+import requests 
 from decimal import *
 import matplotlib.pyplot as plt
  
 
 def main():
-
-    getcontext().prec = 1024
-    value = open("RiemannZetaZeroes.txt","r")
-    print value.read()
+    
+    import requests
+    a = requests.get('http://www.dtc.umn.edu/~odlyzko/zeta_tables/zeros2').text.splitlines()
+    b = []
+    for i in a:
+        if not i.strip():
+            continue
+        if '.' in i:
+            b.append(i.strip())
+    else:
+        b[-1] += i.strip()
+    b = list(map(Decimal, b))
+    print(b)
+    print(b[0])
+    
+    #zeroes = []
+    #getcontext().prec = 1024
+    #value = open("RiemannZetaZeroes.txt","r")
+    #value = value.readlines()
+    #print(value)
+    #for i in range(0,len(value)):
+        #value[i] = value[i].strip()
+    #value = list(filter(None, value))
+    #newList = []
+    #newList.append("".join(value))
+    #print newList
+    
     #bList = [] # Stores the b values for the continued fraction
     #for n in range(0,1000):
         #bList.append(math.floor(value))
