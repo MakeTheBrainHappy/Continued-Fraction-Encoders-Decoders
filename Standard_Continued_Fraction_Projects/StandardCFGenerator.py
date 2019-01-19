@@ -17,26 +17,22 @@ def main():
     else:
         b[-1] += i.strip()
     b = list(map(Decimal, b))
-    print(b)
-    print(b[0])
     
-    #zeroes = []
-    #getcontext().prec = 1024
-    #value = open("RiemannZetaZeroes.txt","r")
-    #value = value.readlines()
-    #print(value)
-    #for i in range(0,len(value)):
-        #value[i] = value[i].strip()
-    #value = list(filter(None, value))
-    #newList = []
-    #newList.append("".join(value))
-    #print newList
+    bList = [] # Stores the b values for the continued fraction
+    for i in range(0,100):
+        bList.append([])
+        for n in range(0,30):
+            bList[i].append(math.floor(b[i]))
+            b[i] = 1/(b[i] - Decimal(b[i]).quantize(Decimal('1.'), rounding=ROUND_DOWN))
     
-    #bList = [] # Stores the b values for the continued fraction
-    #for n in range(0,1000):
-        #bList.append(math.floor(value))
-        #value = 1/(value - Decimal(value).quantize(Decimal('1.'), rounding=ROUND_DOWN))
-    #print(bList)
+    for i in range(0,100):
+        plt.plot(bList[i])
+        plt.xlabel('term in the Standard Continued Fraction')
+        plt.ylabel('Value')
+        plt.title(str(i+1) + '- Riemann Zeta Zero Standard CF')
+        plt.show()
+        plt.savefig("RiemannZetaZero" + str(i+1) + "Standard CF" + ".png")
+    
     #f= open("LiebsSquareIceConstantStandardCF.txt","w+")
     #for i in range(0, 1000):
         #f.write(str(bList[i]))
