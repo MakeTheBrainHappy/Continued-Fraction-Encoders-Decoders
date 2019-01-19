@@ -26,14 +26,18 @@ def main():
             bList[i].append(math.floor(b[i]))
             b[i] = 1/(b[i] - Decimal(b[i]).quantize(Decimal('1.'), rounding=ROUND_DOWN))
     
-    for i in range(0,100):
-        plt.figure()
-        plt.plot(bList[i])
-        plt.xlabel('term in the Standard Continued Fraction')
+    for i in range(0,30):
+        temp = []
+        for j in range (0,100):
+            temp.append(bList[j][i])
+        plt.plot(temp)
+        plt.xlabel('the _ non-trivial zero (i.e. 1st, 2nd, 3rd ...)')
         plt.ylabel('Value')
-        plt.title(str(i+1) + '- Riemann Zeta Zero Standard CF')
-        plt.savefig("RiemannZetaZero" + str(i+1) + "Standard CF" + ".png")
+        plt.title(str(i+1) + '- Riemann Zeta Zero Standard CF Term')
+        plt.savefig("RiemannZetaZeroesTerm" + str(i+1) + "StandardCFPattern" + ".png")
         plt.show()
+
+
     
     #f= open("LiebsSquareIceConstantStandardCF.txt","w+")
     #for i in range(0, 1000):
