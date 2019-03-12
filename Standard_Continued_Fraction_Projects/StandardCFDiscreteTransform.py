@@ -4,6 +4,22 @@ from decimal import *
 import matplotlib
 import matplotlib.pyplot as plt
  
+def newRange(samples):
+    newRange = []
+    for i in range(0,samples):
+        newRange.append(i*(2*math.pi)/samples)
+    return newRange    
+
+def CalcPowerSpectrum(x,y,z):
+    yPower = []
+    for j in range(0,len(y)):
+        yPower.append(math.sqrt(math.pow(y[j],2)+math.pow(x[j],2)))
+    plt.xlabel("Integer Frequency Test")
+    plt.ylabel("Amplitude")
+    plt.title("Discrete Fourier Transform")
+    plt.bar(range(0,len(x)),yPower)
+    plt.savefig("PowerSpectrumForZero" + str(z) + ".png")
+    plt.clf()
 
 def main():
     
@@ -23,6 +39,30 @@ def main():
         for n in range(0,30):
             bList[i].append(math.floor(b[i]))
             b[i] = 1/(b[i] - Decimal(b[i]).quantize(Decimal('1.'), rounding=ROUND_DOWN))
+    
+    for h in range(0,len(bList)):
+        x = newRange(len(bList[h]))
+        for k in range(0,len(bList[0])):
+            fSin = []
+            fCos = []
+            for i in range(0,len(bList[0])/2):
+                fsin = 0
+                fcos = 0
+                for j in range(0,len(bList[0])):
+                    fsin+=(math.sin(i*x[j])*bList[h][j])
+                    fcos+=(math.cos(i*x[j])*bList[h][j])
+                fsin/=len(bList[0])
+                fcos/=len(bList[0])
+                if (i>0):
+                    fsin*=2
+                    fcos*=2
+                fSin.append(fsin)
+                fCos.append(fcos)
+        CalcPowerSpectrum(fSin,fCos,h)
+    
+    
+    
+    #plt.clf()
     
     #for i in range(0,30):
         #temp = []
@@ -48,7 +88,6 @@ def main():
     #plt.ylabel('Value')
     #plt.title('Liebs Square Ice Constant Standard CF')
     #plt.show()
-
 	
 #call to main
 main()
