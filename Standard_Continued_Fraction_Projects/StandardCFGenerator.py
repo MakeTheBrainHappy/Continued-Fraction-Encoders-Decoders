@@ -32,7 +32,8 @@ def main():
     plt.xlabel('the _ non-trivial zero (i.e. 1st, 2nd, 3rd ...)')
     plt.ylabel('Value')
     plt.title("Riemann Zeta Zero Standard CF Term Superposition (Zeroes 1-100)")
-    plt.savefig("RiemannZetaZeroesTerm" + "StandardCFPatternSuperposition" + ".png")
+    plt.ylim(top=200, bottom=0)
+    plt.savefig("RiemannZetaZeroesTerm" + "StandardCFPatternSuperpositionLimited" + ".png")
     
     plt.show()
 
