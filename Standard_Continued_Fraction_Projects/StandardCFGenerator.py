@@ -24,16 +24,18 @@ def main():
             bList[i].append(math.floor(b[i]))
             b[i] = 1/(b[i] - Decimal(b[i]).quantize(Decimal('1.'), rounding=ROUND_DOWN))
     
-    for i in range(0,30):
-        temp = []
-        for j in range (0,100):
-            temp.append(bList[j][i])
-        plt.plot(temp)
-    plt.xlabel('the _ non-trivial zero (i.e. 1st, 2nd, 3rd ...)')
-    plt.ylabel('Value')
-    plt.title("Riemann Zeta Zero Standard CF Term Superposition (Zeroes 1-100)")
-    plt.ylim(top=200, bottom=0)
-    plt.savefig("RiemannZetaZeroesTerm" + "StandardCFPatternSuperpositionLimited" + ".png")
+    print(bList)
+    
+    #for i in range(0,30):
+        #temp = []
+        #for j in range (0,100):
+            #temp.append(bList[j][i])
+        #plt.plot(temp)
+    #plt.xlabel('the _ non-trivial zero (i.e. 1st, 2nd, 3rd ...)')
+    #plt.ylabel('Value')
+    #plt.title("Riemann Zeta Zero Standard CF Term Superposition (Zeroes 1-100)")
+    #plt.ylim(top=200, bottom=0)
+    #plt.savefig("RiemannZetaZeroesTerm" + "StandardCFPatternSuperpositionLimited" + ".png")
     
     plt.show()
 
