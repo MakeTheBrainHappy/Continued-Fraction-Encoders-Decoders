@@ -20,6 +20,8 @@ def makeSamples():
     for x in newRange(samples):
         xValues.append(x)
         yValues.append(32*math.cos(2*x)+8*math.cos(15*x)+19*math.sin(10*x)+3*math.sin(34*x))
+    plt.plot(xValues,yValues)
+    plt.show()
     return(xValues,yValues)
 
 def CalcPowerSpectrum(x,y):
@@ -32,6 +34,16 @@ def CalcPowerSpectrum(x,y):
     plt.bar(range(0,len(x)),yPower)
     #plt.savefig("PowerSpectrum.png")
     plt.show()
+
+def reconstructWave(samplesCount,x,fSin,fCos):
+    y = []
+    for i in x:
+        yt=0
+        for j in range(0,len(fCos)):
+            yt += fSin[j]*math.sin(j*i)
+            yt += fCos[j]*math.cos(j*i)
+        y.append(yt)
+    return y;
 
 def main():
     lists = makeSamples()
@@ -52,8 +64,8 @@ def main():
             fcos*=2
         fSin.append(fsin)
         fCos.append(fcos)
-    print(fSin)
-    print(fCos)
-    CalcPowerSpectrum(fSin,fCos)
+    #CalcPowerSpectrum(fSin,fCos)
+    #plt.plot(x,reconstructWave(len(x),x,fSin,fCos))
+    #plt.show()
     
 main()
