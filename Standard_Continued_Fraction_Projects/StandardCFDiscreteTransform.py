@@ -18,8 +18,8 @@ def CalcPowerSpectrum(x,y,z):
     plt.ylabel("Amplitude")
     plt.title("Discrete Fourier Transform")
     plt.bar(range(0,len(x)),yPower)
-    plt.savefig("PowerSpectrumForZero" + str(z) + ".png")
-    plt.clf()
+    #plt.savefig("PowerSpectrumForZero" + str(z) + ".png")
+    #plt.clf()
 
 def main():
     
@@ -59,8 +59,6 @@ def main():
                 fSin.append(fsin)
                 fCos.append(fcos)
         CalcPowerSpectrum(fSin,fCos,h)
-    
-    
     
     #plt.clf()
     
