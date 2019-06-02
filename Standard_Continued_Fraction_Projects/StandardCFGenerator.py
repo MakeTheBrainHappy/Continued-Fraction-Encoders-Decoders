@@ -24,6 +24,7 @@ def main():
             bList[i].append(math.floor(b[i]))
             b[i] = 1/(b[i] - Decimal(b[i]).quantize(Decimal('1.'), rounding=ROUND_DOWN))
     
+    print(bList)
     #for i in range(0,30):
         #temp = []
         #for j in range (0,100):
@@ -35,7 +36,7 @@ def main():
     #plt.ylim(top=200, bottom=0)
     #plt.savefig("RiemannZetaZeroesTerm" + "StandardCFPatternSuperpositionLimited" + ".png")
     
-    plt.show()
+    #plt.show()
 
     #f= open("LiebsSquareIceConstantStandardCF.txt","w+")
     #for i in range(0, 1000):
