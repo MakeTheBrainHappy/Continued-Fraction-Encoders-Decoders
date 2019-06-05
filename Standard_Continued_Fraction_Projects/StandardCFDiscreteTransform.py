@@ -42,22 +42,21 @@ def main():
     
     for h in range(0,len(bList)):
         x = newRange(len(bList[h]))
-        for k in range(0,len(bList[0])):
-            fSin = []
-            fCos = []
-            for i in range(0,len(bList[0])/2):
-                fsin = 0
-                fcos = 0
-                for j in range(0,len(bList[0])):
-                    fsin+=(math.sin(i*x[j])*bList[h][j])
-                    fcos+=(math.cos(i*x[j])*bList[h][j])
-                fsin/=len(bList[0])
-                fcos/=len(bList[0])
-                if (i>0):
-                    fsin*=2
-                    fcos*=2
-                fSin.append(fsin)
-                fCos.append(fcos)
+        fSin = []
+        fCos = []
+        for i in range(0,len(bList[0])/2):
+            fsin = 0
+            fcos = 0
+            for j in range(0,len(bList[0])):
+                fsin+=(math.sin(i*x[j])*bList[h][j])
+                fcos+=(math.cos(i*x[j])*bList[h][j])
+            fsin/=len(bList[0])
+            fcos/=len(bList[0])
+            if (i>0):
+                fsin*=2
+                fcos*=2
+            fSin.append(fsin)
+            fCos.append(fcos)
         CalcPowerSpectrum(fSin,fCos,h)
     
     #plt.clf()
