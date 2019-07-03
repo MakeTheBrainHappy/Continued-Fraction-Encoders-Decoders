@@ -34,6 +34,7 @@ def encoder():
     start_time = time.time()
     getcontext().prec = 100
     GCFs = set(product([0,1,2,3,4,5,6],repeat=7))
+
     map(decoder,GCFs)
     
     tempList = sorted(continuedFractions)

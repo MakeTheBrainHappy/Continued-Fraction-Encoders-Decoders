@@ -10,6 +10,9 @@ import requests
 import matplotlib.pyplot as plt
 import scipy
 import numpy as np
+import time
+from itertools import product
+from numpy.polynomial.polynomial import polyval
 
 """
 Takes the data from a txt file (1000 digits of the first hundred zeta zeroes) and inputs this into a python list.
@@ -182,6 +185,169 @@ def reconstructWave(samplesCount,x,fSin,fCos):
         y.append(yt)
     return y;
 
+"""
+Description: First implementation of a General CF Decoder (slowed down by Decimals module)
+"""
+def decoderFirstAttempt(a0,b0,a,b,c,d,e,value,continuedFractions):
+    
+    hList = [0,1] # Initializing the h values
+    kList = [1,0] # Initializing the k values
+    aList = [1,Decimal(a0)] #General cf: a list
+    bList = [Decimal(b0)] #General cf: b list
+    
+    for n in range(1,25):
+        aList.append(Decimal(a)*Decimal(n)*Decimal(n)+Decimal(b)*n+Decimal(c))
+        bList.append(Decimal(d)*Decimal(n)+Decimal(e))
+        
+    for n in range(0,24):
+        hList.append((Decimal(bList[n])*Decimal(hList[n+1])+Decimal(aList[n])*Decimal(hList[n])))
+        kList.append((Decimal(bList[n])*Decimal(kList[n+1])+Decimal(aList[n])*Decimal(kList[n])))
+        
+    temp = "a0 ",a0, "b0 ",b0, "a ",a, "b ",b,"c ",c,"d ",d,"e ",e 
+    if (Decimal(kList[25] != 0)):
+        continuedFractions[math.fabs(value-(Decimal(hList[25])/Decimal(kList[25])))] = temp
+    return(continuedFractions)
+
+"""
+Description: First implementation of a General CF Encoder. 2187 GCFs tested - 6.336 seconds | 347 GCFs/sec
+"""
+def encoderFirstAttempt():
+    start_time = time.time()
+    getcontext().prec = 100
+    value = Decimal("3.1415926535897932384626433832795028841971693993751058209749445923078164062862089986280348253421170679821480865132823066470938446095505822317253594081284811174502841027019385211055596446229489549303819644288109756659334461284756482337867831652712019091456485669234603")
+    continuedFractions = {}
+    for a0 in range(2,5):
+        for b0 in range(2,5):
+            for a in range(2,5):
+                for b in range(2,5):
+                    for c in range(2,5):
+                        for d in range(2,5):
+                            for e in range(2,5):
+                                if (d != 0 or e != 0):
+                                    decoder(a0,b0,a,b,c,d,e,value,continuedFractions)                                    
+                                    
+    tempList = sorted(continuedFractions)
+    tempVar = tempList[:15]
+    for i in range(0,15):
+        print("change in x: ", tempVar[i], "CF ", continuedFractions.get(tempVar[i]))
+    
+    print("--- %s seconds ---" % (time.time() - start_time))    
+
+value = Decimal("3.1415926535897932384626433832795028841971693993751058209749445923078164062862089986280348253421170679821480865132823066470938446095505822317253594081284811174502841027019385211055596446229489549303819644288109756659334461284756482337867831652712019091456485669234603")
+
+"""
+Description: Second implementation of a General CF Decoder w/o Decimals and w/ polyval function. 
+"""
+def decoderSecondAttempt(x):
+    
+    hList = [0,1] # Initializing the h values
+    kList = [1,0] # Initializing the k values
+    aList = [1,x[0]] #General cf: a list
+    bList = [x[1]] #General cf: b list
+    temp = ""
+    
+    for n in range(1,25):
+        aList.append(polyval(n, [x[4],x[3],x[2]]))
+        bList.append(polyval(n, [x[6],x[5]]))
+        
+    for n in range(0,24):
+        hList.append(bList[n]*hList[n+1]+aList[n]*hList[n])
+        kList.append(bList[n]*kList[n+1]+aList[n]*kList[n])
+        
+    temp = "a0 ", x[0], "b0 ",x[1], "a ",x[2], "b ",x[3],"c ",x[4],"d ",x[5],"e ",x[6]
+    if (kList[25] != 0):
+        continuedFractions[math.fabs(value-Decimal(hList[25])/Decimal(kList[25]))] = temp
+    return(continuedFractions)
+    
+"""
+Description: Second implementation of a General CF Encoder with the C map function. 823543 GCFs tested - 276.626 seconds | 2977 GCFs/sec
+"""
+def encoderSecondAttempt():
+    start_time = time.time()
+    getcontext().prec = 100
+    GCFs = set(product([0,1,2,3,4,5,6],repeat=7))
+    map(decoder,GCFs)
+    
+    tempList = sorted(continuedFractions)
+    tempVar = tempList[:15]
+    for i in range(0,15):
+        print("change in x: ", tempVar[i], "CF ", continuedFractions.get(tempVar[i]))
+    
+    print("--- %s seconds ---" % (time.time() - start_time))            
+
+continuedFractions  = {}
+
+"""
+Description: Third implementation of a General CF Decoder w numpy array vectorization.  
+"""
+def decoderThirdAttempt(x):
+    global continuedFractions
+    batch_size = x.shape[0]
+ 
+    value = 3.1415926535897932384626433832795028841971693993751058209749445923078164062862089986280348253421170679821480865132823066470938446095505822317253594081284811174502841027019385211055596446229489549303819644288109756659334461284756482337867831652712019091456485669234603
+    hList = np.array([[0, 1]]*batch_size)  # Initializing the h values
+    kList = np.array([[1, 0]]*batch_size)  # Initializing the k values
+    aList = x[:,0]
+    aList = np.stack([np.ones_like(aList), aList], axis=1)
+    bList = x[:,1:2]  # General cf: b list
+ 
+    # Calculate a, b
+    low_n = 1
+    high_n = 25
+    n = np.arange(low_n, high_n)
+    new_a = polyval(n, x[:,2:5].transpose()) # Realign axis to match polyval's expectations
+    new_b = polyval(n, x[:,5:7].transpose())
+    aList = np.concatenate([aList, new_a], axis=1)
+    bList = np.concatenate([bList, new_b], axis=1)
+ 
+    # Calculate h, k for each n value
+    for n in range(0, 24):
+        new_h = (bList[:,n] * hList[:,n + 1] + aList[:,n] * hList[:,n])
+        new_k = (bList[:,n] * kList[:,n + 1] + aList[:,n] * kList[:,n])
+        new_h = np.expand_dims(new_h, axis=1)
+        new_k = np.expand_dims(new_k, axis=1)
+        hList = np.concatenate([hList, new_h], axis=1)
+        kList = np.concatenate([kList, new_k], axis=1)
+ 
+    # Look at each CF, possibly add it to continuedFractions
+    for i in range(batch_size):
+        temp = "a0 ", x[i,0], "b0 ", x[i,1], "a ", x[i,4], "b ", x[i,3], "c ",\
+               x[i,2], "d ", x[i,6], "e ", x[i,5]
+        if (kList[i,25] != 0):
+            continuedFractions[
+                math.fabs(value - (hList[i,25] / kList[i,25]))] = temp
+ 
+    return (continuedFractions)
+
+"""
+Description: Third implementation of a General CF Encoder with numpy arrays/batches. 823543 GCFs tested - 276.626 seconds | 2977 GCFs/sec
+"""
+def encoderThirdAttempt():
+    start_time = time.time()
+    GCFs = np.array(list(product([0,1,2,3,4,5,6], repeat=7)))
+    
+    # Larger batches are faster
+    # Larger batches use more memory
+    batch_size = 2000
+    i = 0
+    while i < len(GCFs):
+        batch = GCFs[i:i+batch_size]
+        decoder(batch)
+        i += batch_size
+    
+    print("--- %s seconds ---" % (time.time() - start_time))
+
+    tempList = sorted(continuedFractions)
+    tempVar = tempList[:15]
+    for i in range(0, min(15, len(tempVar))):
+        print("change in x: ", tempVar[i], "CF ",
+              continuedFractions.get(tempVar[i]))
+ 
+    print("--- %s seconds ---" % (time.time() - start_time))
+ 
+"""
+Description: Commented out sample method calls
+"""
 def main():
     #zetaZeroes() 
     #digitManipulation(zetaZeroes())
@@ -189,8 +355,9 @@ def main():
     #generateSCF(zetaZeroes())
     #decodeSCF(generateSCF(zetaZeroes()))
     #discreteFourierTransform(generateSCF(zetaZeroes()))
-    x = generateSCF(zetaZeroes())
-    discreteFourierTransform([[x[j][i] for j in range(len(x))] for i in range(len(x[0]))])
+    #x = generateSCF(zetaZeroes()) // Store once in data to use in the next
+    #discreteFourierTransform([[x[j][i] for j in range(len(x))] for i in range(len(x[0]))]) // DFTs of terms (transposing the matrix first)
+    
     
 #call to main
 main()    

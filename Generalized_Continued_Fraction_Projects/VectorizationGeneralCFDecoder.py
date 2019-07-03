@@ -7,7 +7,6 @@ import math
 continuedFractions  = {}
 
 def decoder(x):
-    global continuedFractions
     batch_size = x.shape[0]
  
     value = 3.1415926535897932384626433832795028841971693993751058209749445923078164062862089986280348253421170679821480865132823066470938446095505822317253594081284811174502841027019385211055596446229489549303819644288109756659334461284756482337867831652712019091456485669234603
@@ -34,7 +33,10 @@ def decoder(x):
         new_k = np.expand_dims(new_k, axis=1)
         hList = np.concatenate([hList, new_h], axis=1)
         kList = np.concatenate([kList, new_k], axis=1)
- 
+        #if(hList.shape[1] > 1):
+            #if (math.fabs(hList[n+2]/kList[n+2]-value) > math.fabs(hList[n+1]/kList[n+1]-value)):
+                
+        
     # Look at each CF, possibly add it to continuedFractions
     for i in range(batch_size):
         temp = "a0 ", x[i,0], "b0 ", x[i,1], "a ", x[i,4], "b ", x[i,3], "c ",\
@@ -48,9 +50,11 @@ def decoder(x):
  
 def encoder():
     start_time = time.time()
-    GCFs = np.array(list(product([-12, -11, -3, -1, 0, 1, 2, 3, 4], repeat=7)))
+    GCFs = np.array(list(product([1,1,1,1,1,1,1], repeat=7)))
     # Larger batches are faster
     # Larger batches use more memory
+    print("--- %s seconds ---" % (time.time() - start_time))
+
     batch_size = 2000
     i = 0
     while i < len(GCFs):
