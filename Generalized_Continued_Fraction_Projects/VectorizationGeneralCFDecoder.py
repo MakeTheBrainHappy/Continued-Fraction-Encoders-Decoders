@@ -116,7 +116,6 @@ def encoder():
  
     print("--- %s seconds ---" % (time.time() - start_time))
  
- 
 def main():
     encoder()
  
