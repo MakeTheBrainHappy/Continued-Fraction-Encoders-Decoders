@@ -8,7 +8,6 @@ from collections import OrderedDict
 #import pickle
 #import sys
 
- 
 continuedFractions  = {}
 
 count = 0
