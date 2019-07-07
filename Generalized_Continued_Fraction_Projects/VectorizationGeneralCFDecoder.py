@@ -4,6 +4,7 @@ from numpy.polynomial.polynomial import polyval
 from itertools import product
 import math
 import csv
+from collections import OrderedDict
 #import pickle
 #import sys
 
@@ -59,7 +60,7 @@ def decoder(x):
 
     
     if (len(continuedFractions) >= 512000):
-        continuedFractions = sorted(continuedFractions)
+        continuedFractions = OrderedDict(sorted(continuedFractions.items()))
         w = csv.writer(open("output" + str(count) + ".csv", "w"))
         for key, val in continuedFractions.items():
             w.writerow([key, val])
@@ -100,7 +101,7 @@ def encoder():
     
     print("--- %s seconds ---" % (time.time() - start_time))
     
-    continuedFractions = sorted(continuedFractions)
+    continuedFractions = OrderedDict(sorted(continuedFractions.items()))
 
     w = csv.writer(open("output" + str(count) + ".csv", "w"))
     for key, val in continuedFractions.items():
