@@ -71,12 +71,14 @@ def decoder(x):
 def encoder():
     global continuedFractions
     start_time = time.time()
-    GCF = list(product([-9,-8,-7,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,7,8,9,10], repeat=5))
-    constants = list(product([1,2,3,4,5,6,7,8,9,10],repeat=2))
-    GCFs = []
-    for i in constants:
-        for j in GCF:
-            GCFs.append(i + j)
+    #GCF = list(product([4,5,6,7,8,9,10], repeat=5))
+    #constants = list(product([1,2,3,4,5,6,7,8,9,10],repeat=2))
+    #GCFs = []
+    #for i in constants:
+        #for j in GCF:
+            #GCFs.append(i + j)
+            
+    GCFs = list(j + i for i in product(range(-9, 11), repeat=5) for j in product(range(1, 11), repeat=2))
             
     #with open("test.txt", "rb") as fp:
         #GCFs = pickle.load(fp)
