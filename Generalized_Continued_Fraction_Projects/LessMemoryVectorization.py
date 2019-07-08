@@ -101,10 +101,8 @@ def encoder():
     global continuedFractions
     
     start_time = time.time()
-    GCF = list(product([4,5,6,7,8,9,10], repeat=5))
+    GCF = list(product([-9,-8,-7,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,7,8,9,10], repeat=5))
     constants = list(product([1,2,3,4,5,6,7,8,9,10],repeat=2))
-    print(len(GCF))
-    print(len(constants))
     GCFs = []
     counts = 0
     for i in constants:
