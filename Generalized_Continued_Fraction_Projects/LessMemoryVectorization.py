@@ -1,3 +1,9 @@
+#!/usr/bin/env python2
+# -*- coding: utf-8 -*-
+"""
+Description: Vectorization with the GCF Encoder but crafted to take up less memory
+"""
+
 import time
 import numpy as np
 from numpy.polynomial.polynomial import polyval
@@ -20,7 +26,7 @@ def decoder(x):
     
     batch_size = x.shape[0]
  
-    value = 32.935061587739189690662368964074903488812715603517039009280003440784815608630551005938848496135348724549602525280597581513579237782857754506037653011472682109825272713659478166079186507881170353836765474601738548120651787886596466594728787186027971658042677648544066692909393193115645508391751300790279989562656683920024874165169990868845012876404250956064144893023774797053252782409947751765944607446809874067065338290958915614204800224198408375141584435237806584753908207901246070504560100102257438966836495384237704204909559898148908828725637297965721416526317785755201155077784057950147720725798214042130968637793635364185940239585699090026826663214819343540824642411198675065226034566669947805384925779001837592451461820738574360137810637371561037862089022277413320417734643423628639629736284445542467946705724129455369859667727596107799501092598501136571980327345054062391125982107996408750156764769596419463847304800451155728883660650892331803497715016444348320656123479340307063230555187773781024210561808202609296218
+    value = 37.586178158825671257217763480705332821405597350830793218333001113622149089618537264730329104945823803474577747746192235379940965022263936285624822047483688089003667890354537553777903190905644099375838721275634312643051507490897122077467801551204327992986651432331546548850586795060341362549259966882096153281156037995262203235784878311073776146230149105579379015677163411251265371295650176744886452149832702011984494315326208033153177607464795075040560820830213633950862288220551335769555803593746481598709080074079627217716472274070573805968351484679530321727608711240067379431833670679071307878785388574357730695112597437885627621434891374075997674405555785944574435456054998502810248039697965044333212466041270340603151340824120398066920929558272133080574742240379526941447560387171391417722823862277333504075259600092839740678450396055572399332457099842085439308578390827058000428133328048210695855943079835422972275055349593563168097527417304301276517837886885878256674412456445093066944548079936612500679148846677611635
 
     hList = np.array([[0, 1]]*batch_size)  # Initializing the h values
     kList = np.array([[1, 0]]*batch_size)  # Initializing the k values
@@ -67,32 +73,13 @@ def decoder(x):
         count+=1
  
     return (continuedFractions)
-  
-def encoder():
-    global continuedFractions
-    start_time = time.time()
-    #GCF = list(product([4,5,6,7,8,9,10], repeat=5))
-    #constants = list(product([1,2,3,4,5,6,7,8,9,10],repeat=2))
-    #GCFs = []
-    #for i in constants:
-        #for j in GCF:
-            #GCFs.append(i + j)
-            
-    GCFs = list(j + i for i in product(range(-9, 11), repeat=5) for j in product(range(1, 11), repeat=2))
-            
-    #with open("test.txt", "rb") as fp:
-        #GCFs = pickle.load(fp)
+
+def runBatches(GCFs,start_time):
     
-    #print(sys.getsizeof(GCFs))
-
-    #-9,-8,-7,-6,-5,-4,-3,-2,-1,0,1,2,3,
-        
-    GCFs = np.array(GCFs)
-        
-    # Larger batches are faster
-    # Larger batches use more memory
-    print("--- %s seconds ---" % (time.time() - start_time))
-
+    global continuedFractions
+    
+    global count
+    
     batch_size = 2500
     i = 0
     while i < len(GCFs):
@@ -107,6 +94,54 @@ def encoder():
     w = csv.writer(open("output" + str(count) + ".csv", "w"))
     for key, val in continuedFractions.items():
         w.writerow([key, val])
+    count +=1 
+
+def encoder():
+    
+    global continuedFractions
+    
+    start_time = time.time()
+    GCF = list(product([4,5,6,7,8,9,10], repeat=5))
+    constants = list(product([1,2,3,4,5,6,7,8,9,10],repeat=2))
+    print(len(GCF))
+    print(len(constants))
+    GCFs = []
+    counts = 0
+    for i in constants:
+        for j in GCF:
+            GCFs.append(i + j)
+        counts += 1
+        if ((counts)%(10)==0):
+            runBatches(np.array(GCFs),start_time)
+            GCFs = []
+            
+    #GCFs = list(j + i for i in product(range(-9, 11), repeat=5) for j in product(range(1, 11), repeat=2))
+            
+    #with open("test.txt", "rb") as fp:
+        #GCFs = pickle.load(fp)
+    
+    #print(sys.getsizeof(GCFs))
+
+    #-9,-8,-7,-6,-5,-4,-3,-2,-1,0,1,2,3,
+        
+    # Larger batches are faster
+    # Larger batches use more memory
+    #print("--- %s seconds ---" % (time.time() - start_time))
+
+    #batch_size = 2500
+    #i = 0
+    #while i < len(GCFs):
+        #batch = GCFs[i:i+batch_size]
+        #decoder(batch)
+        #i += batch_size
+    
+    #print("--- %s seconds ---" % (time.time() - start_time))
+    
+    #continuedFractions = OrderedDict(sorted(continuedFractions.items()))
+
+    #w = csv.writer(open("output" + str(count) + ".csv", "w"))
+    #for key, val in continuedFractions.items():
+        #w.writerow([key, val])
     
     #print(sys.getsizeof(continuedFractions))
 
@@ -116,7 +151,7 @@ def encoder():
         #print("change in x: ", tempVar[i], "CF ",
               #continuedFractions.get(tempVar[i]))
  
-    print("--- %s seconds ---" % (time.time() - start_time))
+    #print("--- %s seconds ---" % (time.time() - start_time))
  
 def main():
     encoder()
