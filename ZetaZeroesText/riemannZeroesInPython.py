@@ -6,6 +6,7 @@ Takes the data from a txt file (1000 digits of the first hundred zeta zeroes) an
 
 from decimal import *
 import requests 
+import matplotlib.pyplot as plt
 
 def zetaZeroes():
     getcontext().prec = 1024
